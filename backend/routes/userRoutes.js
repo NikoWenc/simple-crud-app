@@ -1,15 +1,19 @@
 import { Router } from "express";
+import {
+  getUsers,
+  addUser,
+  editUser,
+  deleteUser,
+  getUserById,
+} from "../controllers/userControllers.js";
 
 const router = Router();
 
 // Example route
-router.get("/", (req, res) => {
-  res.send("User route is working!");
-});
-router.post("/addUser", (req, res) => {
-  const { name, email } = req.body;
-  // Here you would typically add the user to your database
-  res.send(`User ${name} with email ${email} added successfully!`);
-});
+router.get("/users", getUsers);
+router.get("/user/:id", getUserById);
+router.post("/addUser", addUser);
+router.put("/editUser/user/:id", editUser);
+router.delete("/deleteUser/user/:id", deleteUser);
 
 export default router;
