@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { addUser } from "../api/userAPI.js";
-import useHandleSubmit from "../utils/useHandleSubmit";
+import useHandleSubmit from "../hooks/useHandleSubmit";
 import { useNavigate } from "react-router-dom";
 
 function AddUserForm() {

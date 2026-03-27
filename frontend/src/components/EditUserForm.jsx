@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
-import useHandleSubmit from "../utils/useHandleSubmit";
+import useHandleSubmit from "../hooks/useHandleSubmit";
 import { editUser } from "../api/userAPI";
-import useFetchUser from "../utils/useFetchUser";
+import useFetchUser from "../hooks/useFetchUser";
 
 function EditUserForm() {
   const { id } = useParams();

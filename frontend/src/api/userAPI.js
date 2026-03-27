@@ -12,6 +12,16 @@ const getUsers = async () => {
   }
 };
 
+const getUsersByName = async (username) => {
+  try {
+    const response = await axios.get(`${SERVER_URL}/users/${username}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
+};
+
 const addUser = async (userData) => {
   try {
     const response = await axios.post(`${SERVER_URL}/addUser`, userData);
@@ -55,4 +65,4 @@ const deleteUser = async (id) => {
   }
 };
 
-export { getUsers, addUser, getUserById, editUser, deleteUser };
+export { getUsers, getUsersByName, addUser, getUserById, editUser, deleteUser };

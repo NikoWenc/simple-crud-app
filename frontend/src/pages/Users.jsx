@@ -1,18 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../api/userAPI";
+import { getUsers, getUsersByName } from "../api/userAPI";
 import { useNavigate } from "react-router-dom";
-import useHandleDelete from "../utils/useHandleDelete";
-import usePagination from "../utils/usePagination";
+import useHandleDelete from "../hooks/useHandleDelete";
+import usePagination from "../hooks/usePagination";
+import SearchBar from "../components/SearchBar";
+import { useState } from "react";
 
 const Users = () => {
   const navigate = useNavigate();
   const { handleDelete } = useHandleDelete();
+  const [search, setSearch] = useState("");
 
   const {
     data: users,
     isLoading,
     error,
-  } = useQuery({ queryKey: ["users"], queryFn: getUsers });
+  } = useQuery({
+    queryKey: ["users", search],
+    queryFn: () => {
+      if (search) {
+        return getUsersByName(search);
+      }
+      return getUsers();
+    },
+  });
 
   const {
     handleNextPage,
@@ -61,6 +72,9 @@ const Users = () => {
           Add User
         </button>
       </header>
+
+      {/* add a search bar */}
+      <SearchBar onSubmit={setSearch} onRefresh={() => setSearch("")} />
 
       {/* User List Table Section */}
       <div className="bg-surface-container-lowest rounded-xl overflow-hidden ghost-border">
