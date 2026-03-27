@@ -5,29 +5,36 @@ import AddUser from "../pages/AddUser";
 import EditUser from "../pages/EditUser";
 import AddUserForm from "../components/AddUserForm";
 import EditUserForm from "../components/EditUserForm";
+import App from "../App";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Users />,
-  },
-  {
-    path: "/addUser",
-    element: <AddUser />,
+    element: <App />,
     children: [
       {
-        index: true,
-        element: <AddUserForm />,
+        path: "/",
+        element: <Users />,
       },
-    ],
-  },
-  {
-    path: "/editUser/:id",
-    element: <EditUser />,
-    children: [
       {
-        index: true,
-        element: <EditUserForm />,
+        path: "/addUser",
+        element: <AddUser />,
+        children: [
+          {
+            index: true,
+            element: <AddUserForm />,
+          },
+        ],
+      },
+      {
+        path: "/editUser/:id",
+        element: <EditUser />,
+        children: [
+          {
+            index: true,
+            element: <EditUserForm />,
+          },
+        ],
       },
     ],
   },

@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
-import { editUser, getUserById } from "../api/userAPI";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { getUserById } from "../api/userAPI";
+import { useQuery } from "@tanstack/react-query";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import useHandleSubmit from "../utils/useHandleSubmit";
+import { editUser } from "../api/userAPI";
 
 function EditUserForm() {
   const userData = {
@@ -12,10 +14,9 @@ function EditUserForm() {
   };
 
   const [user, setUser] = useState(userData);
-
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const { id } = useParams();
+  const { handleSubmit, submitPending } = useHandleSubmit(id, user, editUser);
+  const navigate = useNavigate();
 
   const { data: fetchedUser, error } = useQuery({
     queryKey: ["users", id],
@@ -45,28 +46,12 @@ function EditUserForm() {
     }));
   };
 
-  const mutation = useMutation({
-    mutationFn: (user) => editUser(id, user),
-    onSuccess: () => {
-      queryClient.invalidateQueries("users");
-    },
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    mutation.mutate(user);
-    console.log("User data submitted:", user);
-
-    navigate("/");
-  };
-
-  if (mutation.isPending) {
+  if (submitPending) {
     return <div>Updating user...</div>;
   }
 
   if (error) {
-    return <div>Error fetching user data: {error.message}</div>;
+    return <div>Error updating user: {error.message}</div>;
   }
 
   return (
@@ -140,9 +125,9 @@ function EditUserForm() {
           <button
             className="bg-tertiary text-on-tertiary px-8 py-3 rounded-md font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-50"
             type="submit"
-            disabled={mutation.isPending}
+            disabled={submitPending}
           >
-            {mutation.isPending ? "Adding..." : "Add User"}
+            {submitPending ? "Updating..." : "Update User"}
           </button>
         </div>
       </form>

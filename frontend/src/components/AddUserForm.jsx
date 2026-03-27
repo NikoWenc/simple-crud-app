@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addUser } from "../api/userAPI.js";
+import useHandleSubmit from "../utils/useHandleSubmit";
 import { useNavigate } from "react-router-dom";
 
 function AddUserForm() {
@@ -11,6 +11,8 @@ function AddUserForm() {
   };
 
   const [user, setUser] = useState(userData);
+  const navigate = useNavigate();
+  const { handleSubmit, submitPending } = useHandleSubmit(null, user, addUser);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -20,25 +22,7 @@ function AddUserForm() {
     }));
   };
 
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-
-  const mutation = useMutation({
-    mutationFn: addUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries("users");
-    },
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Here you would typically call the addUser API function to submit the form data
-    mutation.mutate(user);
-    console.log("User data submitted:", user);
-    navigate("/");
-  };
-
-  if (mutation.isPending) {
+  if (submitPending) {
     return <div>Adding user...</div>;
   }
 
@@ -113,10 +97,10 @@ function AddUserForm() {
           <button
             className="bg-tertiary text-on-tertiary px-8 py-3 rounded-md font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-50"
             type="submit"
-            disabled={mutation.isPending}
+            disabled={submitPending}
             onClick={handleSubmit}
           >
-            {mutation.isPending ? "Adding..." : "Add User"}
+            {submitPending ? "Adding..." : "Add User"}
           </button>
         </div>
       </form>

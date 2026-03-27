@@ -1,31 +1,18 @@
 import React from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "../api/userAPI";
-import { deleteUser } from "../api/userAPI";
 import { useNavigate } from "react-router-dom";
+import useHandleDelete from "../utils/useHandleDelete";
 
 const Users = () => {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { handleDelete } = useHandleDelete();
 
   const {
     data: users,
     isLoading,
     error,
   } = useQuery({ queryKey: ["users"], queryFn: getUsers });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      deleteMutation.mutate(id);
-    }
-  };
 
   if (isLoading) {
     return <div>Loading users...</div>;
